@@ -1,0 +1,15 @@
+server:
+  port: 8086
+spring:
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      embedding:
+        api-key: ${OPENAI_API_KEY}
+
+      chat:
+        options:
+          model: "o1"
+openai:
+  api:
+    key: ${OPENAI_API_KEY}
