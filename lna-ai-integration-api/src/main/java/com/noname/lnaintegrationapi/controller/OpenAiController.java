@@ -1,5 +1,6 @@
 package com.noname.lnaintegrationapi.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.noname.lnaaiintegrationdto.ChatRequest;
 import com.noname.lnaaiintegrationdto.ChatResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,16 +29,23 @@ public class OpenAiController {
 
     @PostMapping("/chat")
     public ResponseEntity<ChatResponse> chat(@RequestBody ChatRequest chatRequest) {
-        var x = webClient.post()
+        JsonNode root = webClient.post()
                 .uri("/chat/completions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(chatRequest)
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(JsonNode.class)
                 .block();
 
+        String content = root
+                .path("choices")
+                .get(0)
+                .path("message")
+                .path("content")
+                .asText();
+
         return ResponseEntity.ok(ChatResponse.builder()
-                .message(x)
+                .message(content)
                 .build());
     }
 
